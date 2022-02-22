@@ -41,11 +41,12 @@ app.get("/api/v1/todos/:id", async (req, res) => {
 app.post("/api/v1/todos", async (req, res) => {
   try {
     const { todo } = req.body;
-    await db.query(
+    const results = await db.query(
       'INSERT INTO todos(todo, created_on, complete) VALUES($1, current_timestamp, false) RETURNING *',
       [todo]
     );
-    res.json('A todo was created.')
+    // console.log(results);
+    res.send(results.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
