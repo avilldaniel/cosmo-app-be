@@ -45,7 +45,6 @@ app.post("/api/v1/todos", async (req, res) => {
       'INSERT INTO todos(todo, created_on, complete) VALUES($1, current_timestamp, false) RETURNING *',
       [todo]
     );
-    // console.log(results);
     res.send(results.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -68,8 +67,8 @@ app.put("/api/v1/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { todo } = req.body;
-    await db.query('UPDATE todos SET todo=$1 WHERE id=$2', [todo, id]);
-    res.json('A todo was updated.')
+    const results = await db.query('UPDATE todos SET todo=$1 WHERE id=$2 RETURNING *', [todo, id]);
+    res.send(results.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
